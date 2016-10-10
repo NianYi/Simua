@@ -3,6 +3,7 @@
 import os
 import shutil
 import Tkinter
+from Myclass.RSA import rsa
 class denglu(object):
         def __init__(self,top):
                 self.top = top
@@ -13,32 +14,45 @@ class denglu(object):
                 self.label.grid(columnspan=2,sticky=Tkinter.N+Tkinter.S+Tkinter.W+Tkinter.E)
 
                 self.TextInputWidth=22
-		Tkinter.Label(self.top,text='用户名:').grid(sticky=Tkinter.W)
-		Tkinter.Label(self.top,text='密码:').grid(sticky=Tkinter.W)
+		self.userLabel=Tkinter.Label(self.top,text='用户名:')
+		self.userLabel.grid(sticky=Tkinter.W)
+		self.passLabel=Tkinter.Label(self.top,text='密码:')
+		self.passLabel.grid(sticky=Tkinter.W)
                 self.user = Tkinter.StringVar()
-                self.password = Tkinter.StringVar()
-                self.entry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.user)
-                self.entry.bind('<Return>',self.go)
-                self.entry.grid(row=1,column=1,sticky=Tkinter.E)
+                self.passtmp = Tkinter.StringVar()
+		self.passtmp.trace('w',self.passShow)
+		self.password = ''
+                self.userentry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.user)
+                self.userentry.bind('<Return>',self.go)
+                self.userentry.grid(row=1,column=1,sticky=Tkinter.E)
 
-                self.passlabel = Tkinter.Label(self.top,text='Pass')
-                self.passentry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.password)
+		self.passentry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.passtmp)
                 self.passentry.bind('<Return>',self.go)
+		self.passentry.bind('<Key>',self.passCollect)
                 self.passentry.grid(row=2,column=1,sticky=Tkinter.E)
                 self.enter = Tkinter.Button(self.top,text='Enter',font='Helvetica 12 bold',command=self.go,activeforeground='white',activebackground='red')
                 self.enter.grid(columnspan=2,sticky=Tkinter.E)
                 Tkinter.mainloop()
-
+	def passCollect(self,evevt):
+		if event.char >= '!' and event.char <= '~':
+			self.password = self.password+str(event.char)
+	def passShow(self,name,index,mode):
+		if len(self.passtmp.get()) == 0:
+			self.password = ''
+		self.passtmp.set('*'*len(self.passtmp.get()))
+		
         def go(self,env=None):
-                if self.user.get()=='' or self.password.get()=='':
+                if self.user.get()=='' or self.password=='':
                         print 'empty! try again!'
                         return
-
-                fp = open('password.txt','w')
-		fp.write(str(self.user.get()) + '\n' + str(self.password.get()))
+		sec = rsa()
+		fp = open('password.txt','w')
+		fp.write(str(self.user.get()) + '\n' + rsa.encrypt(self.password))
 		fp.close()
 		self.label.grid_forget()
-		self.entry.grid_forget()
+		self.userentry.grid_forget()
 		self.passentry.grid_forget()
 		self.enter.grid_forget()
+		self.userLabel.grid_forget()
+		self.passLabel.grid_forget()
 		self.top.quit()

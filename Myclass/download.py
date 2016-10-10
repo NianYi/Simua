@@ -7,7 +7,7 @@ from  email import *
 from email.utils import parseaddr
 from email.header import decode_header
 from email.parser import Parser
-#from Myclass.download import load
+from Myclass.RSA import rsa
 class load(object):
 	from_list = []
 	to_list = []
@@ -17,6 +17,7 @@ class load(object):
 		fp = open('password.txt')
                 username=fp.readline().strip()
                 password=fp.readline().strip()
+		password = rsa.decrypt(password)
 		host = 'pop.qq.com'
 		server =  POP3_SSL(host)
 		server.user(username)
