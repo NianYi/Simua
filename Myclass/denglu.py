@@ -20,26 +20,34 @@ class denglu(object):
 		self.passLabel.grid(sticky=Tkinter.W)
                 self.user = Tkinter.StringVar()
                 self.passtmp = Tkinter.StringVar()
-		self.passtmp.trace('w',self.passShow)
 		self.password = ''
                 self.userentry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.user)
                 self.userentry.bind('<Return>',self.go)
                 self.userentry.grid(row=1,column=1,sticky=Tkinter.E)
-
+		
+		#-*- 密码输入框-*-
 		self.passentry = Tkinter.Entry(self.top,width=self.TextInputWidth,textvariable=self.passtmp)
-                self.passentry.bind('<Return>',self.go)
-		self.passentry.bind('<Key>',self.passCollect)
+                self.passtmp.trace('w',self.passShow)
+
+		self.passentry.bind('<Return>',self.go)
                 self.passentry.grid(row=2,column=1,sticky=Tkinter.E)
-                self.enter = Tkinter.Button(self.top,text='Enter',font='Helvetica 12 bold',command=self.go,activeforeground='white',activebackground='red')
+                #-*---------------*-
+		
+
+		self.enter = Tkinter.Button(self.top,text='Enter',font='Helvetica 12 bold',command=self.go,activeforeground='white',activebackground='red')
                 self.enter.grid(columnspan=2,sticky=Tkinter.E)
                 Tkinter.mainloop()
-	def passCollect(self,evevt):
-		if event.char >= '!' and event.char <= '~':
-			self.password = self.password+str(event.char)
 	def passShow(self,name,index,mode):
-		if len(self.passtmp.get()) == 0:
-			self.password = ''
-		self.passtmp.set('*'*len(self.passtmp.get()))
+		text_input = self.passtmp.get()
+		print '*号---',text_input
+		if len(self.password)<len(text_input):
+			self.password = self.password + text_input[len(self.password):]
+		else:
+			self.password = self.password[:len(text_input)]
+		print 'pass---',self.password
+		#if len(self.passtmp.get()) == 0:
+		#	self.password = ''
+		self.passtmp.set('*'*len(text_input))
 		
         def go(self,env=None):
                 if self.user.get()=='' or self.password=='':

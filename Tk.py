@@ -8,13 +8,12 @@ from Myclass.download import load
 import thread
 from time import sleep,ctime
 def main():
-	#try:
+	try:
 		root = Tkinter.Tk()
 		dL = denglu(root)
-		
 		show = Show(root)
-	#except:
+	except:
 
-	#	exit(0)
+		exit(0)
 if __name__=='__main__':
 	main()

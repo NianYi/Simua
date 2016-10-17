@@ -90,6 +90,12 @@ class Show(object):
 
 	def content_update(self):
 		self.content.delete(0.0,Tkinter.END)
+		subject_ = load.subject_list[self.index+self.numofperpage*(Show.cur_page-1)]
+		subject_ = subject_.replace(' ','')
+		from_ = load.from_list[self.index+self.numofperpage*(Show.cur_page-1)]
+		from_ = from_[from_.find('<')+1:from_.find('>')]
+		self.content.insert(Tkinter.END,'From:'+from_+'\n')
+		self.content.insert(Tkinter.END,'Subject:'+subject_+'\n\n')
 		soup = BS(load.content_list[self.index+self.numofperpage*(Show.cur_page-1)],'html.parser')
         	#print soup.title.string
         	texts = soup.get_text().strip().split('\n')
@@ -98,7 +104,7 @@ class Show(object):
 			if i.strip() != '':
 				self.content.insert(Tkinter.END,i.strip()+'\n')
 		#self.conscrl.pack(fill=Tkinter.Y,side=Tkinter.RIGHT,expand=True)
-
+	
 	def click(self,ind):
 		self.index = ind
 		self.content_update()
