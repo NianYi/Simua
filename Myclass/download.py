@@ -9,16 +9,23 @@ from email.header import decode_header
 from email.parser import Parser
 from Myclass.RSA import rsa
 from django.utils.encoding import smart_str
+import sqlite3
 class load(object):
 	from_list = []
 	to_list = []
 	subject_list = []
 	content_list = []
 	def __init__(self):
-		fp = open('password.txt')
-                username=fp.readline().strip()
-                password=fp.readline().strip()
-		password = rsa.decrypt(password)
+		#fp = open('password.txt')
+                #username=fp.readline().strip()
+                #password=fp.readline().strip()
+		#password = rsa.decrypt(password)
+		conn = sqlite3.connect('usr/userdb/shadow.db')
+		cursor = conn.cursor()
+		cursor.execute('select * from current_user')
+		relt = cursor.fetchall()[0]
+		username = relt[0]
+		password = rsa.decrypt(relt[1])
 		host = 'pop.qq.com'
 		server =  POP3_SSL(host)
 		try:
